@@ -1,8 +1,8 @@
 # Запуск проєкту (Docker + Laravel + Vite + MySQL)
 
 ## Вимоги
-- Встановлені **Docker** і **Docker Compose v2** (`docker compose`).
-- Вільні порти на хості: **8000** (Laravel), **5173** (Vite), **3316** (MySQL).
+- Встановлені **Docker** і **Docker Compose v2** (`docker compose`)
+- Вільні порти: **8000** (Laravel), **5173** (Vite), **3316** (MySQL)
 
 ## Структура
 ```
@@ -14,11 +14,9 @@ project-root/
 ```
 
 ## 1) Підготовка `.env`
-Скопіюйте приклад і відредагуйте налаштування БД:
 ```bash
 cp laravel/.env.example laravel/.env
 ```
-
 У `laravel/.env` перевірте:
 ```env
 APP_ENV=local
@@ -33,24 +31,26 @@ DB_USERNAME=root
 DB_PASSWORD=root
 ```
 
-## 2) Пуск контейнерів
+## 2) Підняти контейнери
 ```bash
 docker compose up -d --build
 ```
+> Сервіс **app** автоматично виконає `composer install` і запустить `php artisan serve` (див. `command` у compose).
 
-## 3) Ініціалізація Laravel (у контейнері `app`)
+## 3) Ініціалізація Laravel
 ```bash
-docker compose exec app composer install
-docker compose exec app php artisan key:generate
-docker compose exec app php artisan migrate
-docker compose exec app php artisan app:import-webmagic
-
+docker compose exec app sh -lc 'php artisan key:generate && php artisan migrate'
 ```
 
-> **Node/Vite** залежності ставляться автоматично у контейнері `node` через `npm ci`.
+## 4) Команда імпорту статей
+
+За замовчуванням імпорт охоплює **останні 4 місяці** (у тестах — ≈ 1 стаття).  
+Щоб завантажити більший архів для тестування, тимчасово **збільште період** (наприклад, до 400 місяців) в імпорту/коді.
+
+```bash
+docker compose exec app php artisan app:import-webmagic
+```
 
 ## URL-и
-- Laravel: **http://localhost:8000**
-- Vite dev server: **http://localhost:5173**
-- MySQL (з хоста): **127.0.0.1:3316**  
-  Користувач: `root`, Пароль: `root`, База: `database_test_server`
+- Laravel Vue: **http://localhost:8000**
+- MySQL (з хоста): **127.0.0.1:3316** (user: `root`, pass: `root`, db: `database_test_server`)
