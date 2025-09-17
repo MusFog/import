@@ -19,10 +19,6 @@ cp laravel/.env.example laravel/.env
 ```
 У `laravel/.env` перевірте:
 ```env
-APP_ENV=local
-APP_DEBUG=true
-APP_URL=http://localhost:8000
-
 DB_CONNECTION=mysql
 DB_HOST=db
 DB_PORT=3306
